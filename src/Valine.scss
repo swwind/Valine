@@ -243,6 +243,10 @@
                 overflow: hidden;
                 padding-bottom:1.5rem;
                 border-bottom:1px solid #f5f5f5;
+                section {
+                    padding-bottom: 0;
+                    border-bottom: none;
+                }
                 .vfooter{
                     position:relative;
                     .vtime {

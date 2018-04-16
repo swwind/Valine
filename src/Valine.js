@@ -214,11 +214,12 @@ class Valine {
             let cq = commonQuery();
             cq.limit('1000');
             cq.find().then(rets => {
+                rets.reverse();
                 let len = rets.length;
                 if (len) {
                     _root.el.querySelector('.vlist').innerHTML = '';
                     for (let i = 0; i < len; i++) {
-                        insertDom(rets[i], !0)
+                        insertDom(rets[i])
                     }
                     _root.el.querySelector('.count').innerHTML = `评论(<span class="num">${len}</span>)`;
                 }
@@ -230,14 +231,27 @@ class Valine {
         }
         query();
 
-        let insertDom = (ret, mt) => {
+        let insertDom = (ret) => {
+            let mt = !!ret.get('rid'); // is reply
+            let _vlist = _root.el.querySelector('.vlist');
+            if (mt) {
+                let rid = ret.get('rid');
+                let rel = document.getElementById(rid).querySelector('section');
+                if (rel.querySelector('ul')) {
+                    _vlist = rel.querySelector('ul');
+                    _vlist.classList.add('vlist')
+                } else {
+                    let before = rel.querySelector('.vfooter');
+                    _vlist = document.createElement('ul');
+                    rel.appendChild(_vlist);
+                }
+            }
 
             let _vcard = document.createElement('li');
             _vcard.setAttribute('class', 'vcard');
             _vcard.setAttribute('id', ret.id);
             let _img = gravatar['hide'] ? '' : `<img class="vimg" src='${gravatar.cdn + md5(ret.get('mail') || ret.get('nick')) + gravatar.params}'>`;
             _vcard.innerHTML = `${_img}<section><div class="vhead"><a rel="nofollow" href="${getLink({ link: ret.get('link'), mail: ret.get('mail') })}" target="_blank" >${ret.get("nick")}</a></div><div class="vcontent">${ret.get("comment")}</div><div class="vfooter"><span class="vtime">${timeAgo(ret.get("createdAt"))}</span><span rid='${ret.id}' at='@${ret.get('nick')}' mail='${ret.get('mail')}' class="vat">回复</span><div></section>`;
-            let _vlist = _root.el.querySelector('.vlist');
             let _vlis = _vlist.querySelectorAll('li');
             let _vat = _vcard.querySelector('.vat');
             let _as = _vcard.querySelectorAll('a');
@@ -332,7 +346,7 @@ class Valine {
                 return;
             }
             if (defaultComment.nick == '') {
-                defaultComment['nick'] = '小调皮';
+                defaultComment['nick'] = 'tourist';
             }
             let idx = defaultComment.comment.indexOf(atData.at);
             if (idx > -1 && atData.at != '') {
@@ -427,7 +441,7 @@ class Valine {
                     } else {
                         _root.el.querySelector('.count').innerHTML = '评论(<span class="num">1</span>)'
                     }
-                    insertDom(ret);
+                    insertDom(ret)
 
                     defaultComment['mail'] && signUp({
                         username: defaultComment['nick'],
@@ -520,7 +534,7 @@ class Valine {
                 atData['at'] = at;
                 atData['rmail'] = rmail;
                 defaultComment['rid'] = rid;
-                inputs['comment'].value = `${at} ，`;
+                inputs['comment'].setAttribute('placeholder', `回复 ${at} 的评论...`);
                 inputs['comment'].focus();
             })
         }
