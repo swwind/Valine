@@ -1,9 +1,9 @@
 {
-  "name": "valine",
-  "version": "1.1.9-beta9",
+  "name": "valine-ex",
+  "version": "1.1.9",
   "description": "A simple comment system based on Leancloud.",
   "main": "/dist/Valine.min.js",
-  "author": "xCss <xioveliu@gmail.com> (https://github.com/xCss)",
+  "author": "xCss <xioveliu@gmail.com> (https://github.com/xCss) & swwind <swwind233@gmail.com> (https://github.com/swwind)",
   "scripts": {
     "test": "webpack",
     "build": "webpack",
@@ -19,11 +19,11 @@
   "license": "GPL-2.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/xcss/Valine.git"
+    "url": "git+https://github.com/swwind/Valine.git"
   },
   "autoupdate": {
     "source": "git",
-    "target": "git://github.com/xcss/Valine.git",
+    "target": "git://github.com/swwind/Valine.git",
     "fileMap": [
       {
         "basePath": "dist",
@@ -40,9 +40,9 @@
     ]
   },
   "bugs": {
-    "url": "https://github.com/xcss/Valine/issues"
+    "url": "https://github.com/swwind/Valine/issues"
   },
-  "homepage": "https://github.com/xcss/Valine#readme",
+  "homepage": "https://github.com/swwind/Valine#readme",
   "devDependencies": {
     "autoprefixer": "^7.1.1",
     "babel-core": "^6.25.0",
