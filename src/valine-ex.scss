@@ -32,9 +32,10 @@
       background: transparent;
     }
     .vheader {
-      display: flex;
+      height: 40px;
+      overflow: hidden;
+      scroll-behavior: smooth;
       .vinput {
-        width: 33.33333333%;
         border-bottom: 1px #dedede dashed;
       }
       .vinput:focus {
@@ -46,6 +47,54 @@
         }
         &.item2 .vinput {
           width: 100%;
+        }
+      }
+      .vsign {
+        height: 40px;
+        display: flex;
+        .vinput {
+          flex: 1;
+        }
+        button {
+          margin-left: 10px;
+          &.active {
+            background-color: #3090e4;
+            &:hover {
+              background-color: white;
+            }
+          }
+        }
+      }
+      .vsigned {
+        height: 40px;
+        .vleftdiv {
+          border-radius: 20px;
+          display: inline-block;
+          background: rgba(0, 0, 0, .1);
+          transition: all .4s;
+          user-select: none;
+          img {
+            border-radius: 50%;
+            vertical-align: middle;
+          }
+          .vintro {
+            margin-left: 10px;
+            &:last-child {
+              margin-right: 15px;
+            }
+          }
+          &:hover {
+            box-shadow: 5px 0 5px rgba(0, 0, 0, .1);
+            transition: all .4s;
+          }
+        }
+        button {
+          float: right;
+        }
+        &:after {
+          content: "";
+          display: block;
+          clear: both;
         }
       }
     }

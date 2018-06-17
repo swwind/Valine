@@ -1,3 +1,5 @@
+'use strict';
+
 const HtmlUtil = {
   __tool: document.createElement('div'),
   /**
@@ -19,6 +21,14 @@ const HtmlUtil = {
     return this.__tool.innerText;
   }
 };
+
+const padWithZeros = (vNumber, width) => {
+  var numAsString = vNumber.toString();
+  while (numAsString.length < width) {
+    numAsString = '0' + numAsString;
+  }
+  return numAsString;
+}
 
 const dateFormat = (date) => {
   var vDay = padWithZeros(date.getDate(), 2);
@@ -60,8 +70,8 @@ const timeAgo = (date) => {
   }
 }
 
-const getLink = (target) => {
-  return target.link || (target.mail && `mailto:${target.mail}`) || 'javascript:void(0);';
+const getLink = (link) => {
+  return link || 'javascript:void(0);';
 }
 
 const Checker = {
@@ -78,14 +88,6 @@ const Checker = {
       v: l
     };
   }
-}
-
-const padWithZeros = (vNumber, width) => {
-  var numAsString = vNumber.toString();
-  while (numAsString.length < width) {
-    numAsString = '0' + numAsString;
-  }
-  return numAsString;
 }
 
 const Event = {
