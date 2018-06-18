@@ -26,7 +26,7 @@ const defaultComment = {
   link: '',
   ua: navigator.userAgent,
   url: '',
-  authenticated: false
+  auth: false
 };
 
 const shorten = (str) =>
@@ -43,7 +43,7 @@ class Valine {
   constructor(option) {
     let _root = this;
     // version
-    _root.version = '1.1.9';
+   _root.version = 'v1.2.0-beta1';
 
     _root.md5 = md5;
     _root.store = localStorage;
@@ -119,8 +119,8 @@ class Valine {
       <ul class="vlist"></ul>
       <div class="info">
         <div class="power txt-right">
-          Powered By <a href="https://github.com/swwind/valine-ex" target="_blank">ValineEX</a>
-          <br>v${_root.version}
+          Powered By <a href="https://github.com/swwind/valine-ex" target="_blank">ValineEX</a><br>
+          ${_root.version}
         </div>
       </div>
     `);
@@ -169,8 +169,9 @@ class Valine {
 
     gravatar.params = `?d=${option.avatar}&s=40`;
     gravatar.hide = option.avatar === 'hide';
-    gravatar.get = (mail) => {
-      return gravatar.hide ? '' : `<img class="vimg" src="${gravatar.cdn + md5(mail) + gravatar.params}">`;
+    gravatar.get = (mail, auth) => {
+      let auths = auth ? '<span class="vicon auth"></span>' : '';
+      return gravatar.hide ? '' : `<img class="vimg" src="${gravatar.cdn + md5(mail) + gravatar.params}">${auths}`;
     }
 
     let av = option.av || AV;
@@ -230,7 +231,7 @@ class Valine {
       _vcard.setAttribute('class', 'vcard');
       _vcard.setAttribute('id', ret.id);
       _vcard.innerHTML = shorten(`
-        ${gravatar.get(ret.get('mail'))}
+        ${gravatar.get(ret.get('mail'), ret.get('auth'))}
         <section>
           <div class="vhead">
             <a rel="nofollow" href="${getLink(ret.get('link'))}" target="_blank" >
@@ -342,21 +343,19 @@ class Valine {
     }
     const onLogin = (user) => {
       _root.user = user;
-      defaultComment.authenticated = true;
+      defaultComment.auth = true;
       defaultComment.nick = user.get('username');
       defaultComment.mail = user.get('email');
       defaultComment.link = user.get('link');
       vheader.querySelector('.vleftdiv').innerHTML = shorten(`
         ${gravatar.get(user.get('email'))}
-        <span class="vintro">${user.get('username')}</span>
-        <span class="vintro"><a href="mailto:${user.get('email')}">${user.get('email')}</a></span>
-        <span class="vintro"><a href="${user.get('link')}">${user.get('link')}</a></span>
+        <span class="vintro">已登录</span>
       `)
       jumpTo(3);
     }
     const onLogout = () => {
       _root.user = null;
-      defaultComment.authenticated = false;
+      defaultComment.auth = false;
       jumpTo(0);
     }
     const tryToLogin = () => {
@@ -394,7 +393,10 @@ class Valine {
     if (_root.user) {
       onLogin(_root.user);
     } else {
-      getCache();
+      let cache = getCache();
+      inputs.nick.value = cache.nick;
+      inputs.mail.value = cache.mail;
+      inputs.link.value = cache.link;
     }
 
     // 提交评论
@@ -406,7 +408,7 @@ class Valine {
         return;
       }
       if (!_root.user) {
-        let nick = inputs.nick.value;
+        let nick = inputs.nick.value || touristName;
         let mail = inputs.mail.value;
         let link = inputs.link.value;
         defaultComment.nick = nick;
@@ -438,7 +440,6 @@ class Valine {
       let comment = new Ct(defaultComment);
       comment.setACL(getAcl());
       comment.save().then((ret) => {
-        // TODO ?? what to do ??
         let _count = _root.el.querySelector('.num');
         let num = 1;
         if (_count) {
