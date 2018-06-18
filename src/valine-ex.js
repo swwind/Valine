@@ -334,8 +334,9 @@ class Valine {
     // 注册
     const signup = (nick, pass, mail, link) => {
       return _root.v.User.signUp(nick, pass, {
-        mail: mail,
-        link: link
+        email: mail,
+        link: link,
+        ACL: getAcl()
       });
     }
     const signin = (mail, pass) => {
