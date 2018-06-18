@@ -43,7 +43,7 @@ class Valine {
   constructor(option) {
     let _root = this;
     // version
-   _root.version = 'v1.2.0-beta1';
+   _root.version = 'v1.2.0-beta';
 
     _root.md5 = md5;
     _root.store = localStorage;
