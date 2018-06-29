@@ -32,8 +32,6 @@ const defaultComment = {
 const shorten = (str) =>
   str.trim().replace(/>\s+</g, '><');
 
-const guest_info = ['nick', 'mail', 'link'];
-
 class Valine {
   /**
    * Valine constructor function
@@ -43,7 +41,7 @@ class Valine {
   constructor(option) {
     let _root = this;
     // version
-   _root.version = 'v1.2.0-beta';
+   _root.version = 'v1.2.0-beta2';
 
     _root.md5 = md5;
     _root.store = localStorage;
