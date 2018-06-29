@@ -41,14 +41,6 @@
       .vinput:focus {
         border-bottom-color: #eb5055;
       }
-      @media screen and (max-width: 520px) {
-        .vinput {
-          width: 100%;
-        }
-        &.item2 .vinput {
-          width: 100%;
-        }
-      }
       .vsign {
         height: 40px;
         display: flex;
@@ -59,8 +51,10 @@
           margin-left: 10px;
           &.active {
             background-color: #3090e4;
+            color: white;
             &:hover {
               background-color: white;
+              color: #3090e4;
             }
           }
         }
@@ -78,9 +72,11 @@
           }
           .vintro {
             margin-left: 10px;
-            &:last-child {
-              margin-right: 15px;
-            }
+            margin-right: 15px;
+            height: 40px;
+            vertical-align: middle;
+            line-height: 40px;
+            font-size: 14px;
           }
         }
         button {
@@ -380,6 +376,7 @@
   }
   .vicon {
     display: block;
+    /* from bilibili */
     background: url("https://s1.hdslb.com/bfs/static/jinkela/space/images/user-auth.png");
     position: absolute;
     left: 24px;

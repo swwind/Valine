@@ -104,7 +104,7 @@ class Valine {
         </div>
         <div class="vcontrol">
           <div class="col col-60" title="MarkDown is Support">
-            <a href="https://segmentfault.com/markdown">Markdown</a> 赛高
+            <a href="https://segmentfault.com/markdown">Markdown</a> Powered
           </div>
           <div class="col col-40 text-right">
             <button type="button" class="vsubmit vbtn">回复</button>
@@ -321,10 +321,12 @@ class Valine {
     Event.on('click', vheader.querySelector('.vsno .vsinbtn'), () => jumpTo(1));
     Event.on('click', vheader.querySelector('.vsno .vsupbtn'), () => jumpTo(2));
     // 1
+    Event.on('change', vheader.querySelector('.vsin .vpass'), () => tryToLogin());
     Event.on('click', vheader.querySelector('.vsin .vsinbtn'), () => tryToLogin());
     Event.on('click', vheader.querySelector('.vsin .vsupbtn'), () => jumpTo(2));
     Event.on('click', vheader.querySelector('.vsin .vbckbtn'), () => jumpTo(0));
     // 2
+    Event.on('change', vheader.querySelector('.vsup .vlink'), () => tryToRegister());
     Event.on('click', vheader.querySelector('.vsup .vsinbtn'), () => jumpTo(1));
     Event.on('click', vheader.querySelector('.vsup .vsupbtn'), () => tryToRegister());
     Event.on('click', vheader.querySelector('.vsup .vbckbtn'), () => jumpTo(0));
@@ -348,10 +350,12 @@ class Valine {
       defaultComment.nick = user.get('username');
       defaultComment.mail = user.get('email');
       defaultComment.link = user.get('link');
-      vheader.querySelector('.vleftdiv').innerHTML = shorten(`
+      let vleftdiv = vheader.querySelector('.vleftdiv');
+      vleftdiv.innerHTML = shorten(`
         ${gravatar.get(user.get('email'))}
-        <span class="vintro">已登录</span>
+        <span class="vintro">${user.get('username')}</span>
       `)
+      vleftdiv.setAttribute('title', `User: ${user.get('username')}\n(${user.get('email')})`)
       jumpTo(3);
     }
     const onLogout = () => {
@@ -395,9 +399,11 @@ class Valine {
       onLogin(_root.user);
     } else {
       let cache = getCache();
-      inputs.nick.value = cache.nick;
-      inputs.mail.value = cache.mail;
-      inputs.link.value = cache.link;
+      if (cache) {
+        inputs.nick.value = cache.nick;
+        inputs.mail.value = cache.mail;
+        inputs.link.value = cache.link;
+      }
     }
 
     // 提交评论
