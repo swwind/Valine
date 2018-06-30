@@ -29,8 +29,7 @@ const defaultComment = {
   auth: false
 };
 
-const shorten = (str) =>
-  str.trim().replace(/>\s+</g, '><');
+const shorten = (str) => str.trim().replace(/>\s+</g, '><');
 
 class Valine {
   /**
@@ -41,7 +40,7 @@ class Valine {
   constructor(option) {
     let _root = this;
     // version
-   _root.version = 'v1.2.0-beta2';
+    _root.version = 'v1.2.0-beta2';
 
     _root.md5 = md5;
     _root.store = localStorage;
@@ -60,7 +59,7 @@ class Valine {
 
     let el = Object.prototype.toString.call(option.el) === "[object HTMLDivElement]" ? option.el : document.querySelector(option.el);
     if (Object.prototype.toString.call(el) != '[object HTMLDivElement]') {
-      throw `The target element was not found.`;
+      throw 'The target element was not found.';
     }
     _root.el = el;
     _root.el.classList.add('valine');
@@ -72,7 +71,7 @@ class Valine {
           <div class="vsign vsno">
             <input name="nonick" placeholder="称呼" class="vnick vinput" type="text">
             <input name="nomail" placeholder="邮箱" class="vmail vinput" type="email">
-            <input name="nolink" placeholder="网址(http://)" class="vlink vinput" type="vlink">
+            <input name="nolink" placeholder="网址(https://)" class="vlink vinput" type="vlink">
             <button class="vbtn vsinbtn">登录</button>
             <button class="vbtn vsupbtn">注册</button>
           </div>
@@ -87,7 +86,7 @@ class Valine {
             <input name="upnick" placeholder="称呼" class="vnick vinput" type="text">
             <input name="uppass" placeholder="密码" class="vpass vinput" type="password">
             <input name="upmail" placeholder="邮箱" class="vmail vinput" type="email">
-            <input name="uplink" placeholder="网址(http://)" class="vlink vinput" type="text">
+            <input name="uplink" placeholder="网址(https://)" class="vlink vinput" type="text">
             <button class="vbtn vsinbtn">登录</button>
             <button class="vbtn vsupbtn active">注册</button>
             <button class="vbtn vbckbtn">返回</button>
@@ -460,7 +459,7 @@ class Valine {
         inputs.comment.value = "";
         inputs.comment.setAttribute('placeholder', _root.placeholder);
         defaultComment.rid = '';
-      }).catch(ex => {
+      }).catch((ex) => {
         _root.loading.hide();
         _root.nodata.show('提交失败\n' + ex.message);
         setTimeout(_root.nodata.hide, 2000);

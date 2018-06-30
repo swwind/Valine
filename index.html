@@ -11,20 +11,23 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <meta content="telephone=no,email=no" name="format-detection">
   <meta http-equiv="X-UA-Compatible" content="IE=Edge,Chrome=1">
-  <title>Valine - A simple comment system based on Leancloud.</title>
+  <title>ValineEX - fork from xCss/Valine.</title>
   <style>
     * {
-      margin: 0 auto;
+      margin-left: auto;
+      margin-right: auto;
       padding: 0;
       box-sizing: border-box;
       font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", 微软雅黑, "helvetica neue", helvetica, ubuntu, roboto, noto, "segoe ui", Arial, sans-serif;
     }
 
     body {
+      margin: 0;
       background-color: rgb(238, 238, 238);
     }
 
     header {
+      margin: 0;
       background: #fff;
     }
 
@@ -123,16 +126,16 @@
   <div class="market"></div>
   <header>
     <div class="container">
-      <a href="./" class="logo">Valine</a>
-      <span class="sub">A simple comment system based on Leancloud.</span>
+      <a href="./" class="logo">ValineEX</a>
+      <span class="sub">Fork from <a href="https://github.com/xCss/Valine">xCss/Valine</a>, did some buffs.</span>
     </div>
   </header>
   <div class="container">
     <div class="placeholder"></div>
     <div class="content">
-      <div id="github">
-        <iframe allowtransparency="true" frameborder="0" scrolling="0" width="98" height="20"></iframe>
-        <iframe allowtransparency="true" frameborder="0" scrolling="0" width="156" height="20"></iframe>
+      <div class="intro">
+        <h1>Try our user system!</h1>
+        <p>Do not worry about safety, anyone even admin will not know your password.</p>
       </div>
       <div class="comment"></div>
     </div>
@@ -144,12 +147,11 @@
     var valine = new Valine();
     valine.init({
       el: '.comment',
-      app_id: 'Xg0skcXL3ifVW7K0SFKTFCzE-gzGzoHsz',
-      app_key: 'Hd5RR4oB6dkRi9n8mrKcQMXB',
-      placeholder: 'ヾﾉ≧∀≦)o来啊，快活啊!',
+      appId: 'Xg0skcXL3ifVW7K0SFKTFCzE-gzGzoHsz',
+      appKey: 'Hd5RR4oB6dkRi9n8mrKcQMXB',
+      placeholder: '',
       path: window.location.pathname,
-      avatar:'mm', // 1.1.7 新增(mm/identicon/monsterid/wavatar/retro)
-      // guest_info: ['nick'] // 默认 ['nick', 'mail', 'link']
+      avatar:'mm'
     })
   </script>
 </body>
