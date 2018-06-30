@@ -328,6 +328,7 @@ class Valine {
       vheader.children[page].children[0].focus();
     }
     unbindTab(vheader.querySelectorAll('button, input'))
+    bindTab(vheader.children[0].querySelectorAll(`input`))
 
     // 注册
     const signup = (nick, pass, mail, link) => {
