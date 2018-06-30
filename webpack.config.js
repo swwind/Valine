@@ -16,7 +16,7 @@ module.exports = env => {
     output: {
       path: BUILD_PATH,
       filename: '[name].min.js',
-      library: '[name]',
+      library: 'Valine',
       libraryTarget: 'umd',
       umdNamedDefine: true
     },

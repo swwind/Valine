@@ -311,24 +311,23 @@ class Valine {
     // const vinfo = _root.el.querySelector('div.vinfo');
     // const vctl = _root.el.querySelector('div.vctl');
     const vheader = _root.el.querySelector('.vheader');
+    const bindTab = (arr) => {
+      Array.from(arr).map((el) => {
+        el.removeAttribute('tabindex');
+      })
+    }
+    const unbindTab = (arr) => {
+      Array.from(arr).map((el) => {
+        el.setAttribute('tabindex', -1);
+      })
+    }
     const jumpTo = (page) => { // 0-3
       vheader.scrollTop = page * 40;
+      unbindTab(vheader.querySelectorAll('input'))
+      bindTab(vheader.children[page].querySelectorAll(`input`))
+      vheader.children[page].children[0].focus();
     }
-    // 0
-    Event.on('click', vheader.querySelector('.vsno .vsinbtn'), () => jumpTo(1));
-    Event.on('click', vheader.querySelector('.vsno .vsupbtn'), () => jumpTo(2));
-    // 1
-    Event.on('change', vheader.querySelector('.vsin .vpass'), () => tryToLogin());
-    Event.on('click', vheader.querySelector('.vsin .vsinbtn'), () => tryToLogin());
-    Event.on('click', vheader.querySelector('.vsin .vsupbtn'), () => jumpTo(2));
-    Event.on('click', vheader.querySelector('.vsin .vbckbtn'), () => jumpTo(0));
-    // 2
-    Event.on('change', vheader.querySelector('.vsup .vlink'), () => tryToRegister());
-    Event.on('click', vheader.querySelector('.vsup .vsinbtn'), () => jumpTo(1));
-    Event.on('click', vheader.querySelector('.vsup .vsupbtn'), () => tryToRegister());
-    Event.on('click', vheader.querySelector('.vsup .vbckbtn'), () => jumpTo(0));
-    // 3
-    Event.on('click', vheader.querySelector('.vlogout'), () => tryToLogout());
+    unbindTab(vheader.querySelectorAll('button, input'))
 
     // 注册
     const signup = (nick, pass, mail, link) => {
@@ -389,6 +388,23 @@ class Valine {
         alert('登出失败\n' + err.message);
       })
     }
+
+    // 绑定按钮事件
+    // 0
+    Event.on('click', vheader.querySelector('.vsno .vsinbtn'), () => jumpTo(1));
+    Event.on('click', vheader.querySelector('.vsno .vsupbtn'), () => jumpTo(2));
+    // 1
+    Event.on('change', vheader.querySelector('.vsin .vpass'), tryToLogin);
+    Event.on('click', vheader.querySelector('.vsin .vsinbtn'), tryToLogin);
+    Event.on('click', vheader.querySelector('.vsin .vsupbtn'), () => jumpTo(2));
+    Event.on('click', vheader.querySelector('.vsin .vbckbtn'), () => jumpTo(0));
+    // 2
+    Event.on('change', vheader.querySelector('.vsup .vlink'), tryToRegister);
+    Event.on('click', vheader.querySelector('.vsup .vsinbtn'), () => jumpTo(1));
+    Event.on('click', vheader.querySelector('.vsup .vsupbtn'), tryToRegister);
+    Event.on('click', vheader.querySelector('.vsup .vbckbtn'), () => jumpTo(0));
+    // 3
+    Event.on('click', vheader.querySelector('.vlogout'), () => tryToLogout());
 
     // 检查是否已经登录
     _root.user = _root.v.User.current();
@@ -474,12 +490,11 @@ class Valine {
         let rmail = el.getAttribute('mail');
         defaultComment.rid = rid;
         inputs.comment.setAttribute('placeholder', `回复 ${at} 的评论...`);
+        inputs.comment.scrollIntoView({block: 'center', behavior: 'smooth'});
         inputs.comment.select();
       })
     }
   }
 }
 
-window.Valine = Valine;
-
-export default Valine;
+module.exports = Valine;
