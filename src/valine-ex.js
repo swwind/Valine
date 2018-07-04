@@ -320,10 +320,10 @@ class Valine {
       })
     }
     const jumpTo = (page) => { // 0-3
-      vheader.scrollTop = page * 40;
+      vheader.scrollTo({top: page * 40, behavior: 'smooth'});
       unbindTab(vheader.querySelectorAll('input'))
       bindTab(vheader.children[page].querySelectorAll(`input`))
-      vheader.children[page].children[0].focus();
+      vheader.children[page].children[0].select();
     }
     unbindTab(vheader.querySelectorAll('button, input'))
     bindTab(vheader.children[0].querySelectorAll(`input`))
