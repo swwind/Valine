@@ -323,7 +323,7 @@ class Valine {
       vheader.scrollTo({top: page * 40, behavior: 'smooth'});
       unbindTab(vheader.querySelectorAll('input'))
       bindTab(vheader.children[page].querySelectorAll(`input`))
-      vheader.children[page].children[0].select();
+      if (page < 3) vheader.children[page].children[0].select();
     }
     unbindTab(vheader.querySelectorAll('button, input'))
     bindTab(vheader.children[0].querySelectorAll(`input`))
