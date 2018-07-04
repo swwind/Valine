@@ -2,15 +2,15 @@
 
 Fork from [xCss/Valine@1.1.8-beta][xcss].
 
-[Demo](https://valine.swwind.me)
+[Demo][demo]
 
 size: 55.2kb (`dist/valine-ex.min.js`)
 
 ## Feature
 
-- New reply layout(same as [xCss/Valine@1.2.0-beta][xcss]).
+- New reply layout(same as now).
 - User system(No one can impersonate you now).
-- Removed lots of things.
+- Removed lots of things which I think is useless.
 
 ## Usage
 
@@ -21,7 +21,7 @@ size: 55.2kb (`dist/valine-ex.min.js`)
 <script type="text/javascript">
 let valine = new Valine();
 valine.init({
-  el: document.querySelector('#comment'),
+  el: document.querySelector('#comment'), // or just '#comment'
   appId: 'xxxxxxxxxxxxxxxxxxx',
   appKey: 'xxxxxxxxxxxxxxx',
   avatar: 'mm'
@@ -29,4 +29,17 @@ valine.init({
 </script>
 ```
 
+## FAQ
+
+### What can logged user do but tourist can not?
+
+**User title**
+
+> If you are the owner of the site, you can choose to display a title after your machine version.
+
+Open leancloud dashboard, open `_User` class, the `title` attribute is the what you want.
+
+Just modify it.
+
+[demo]: https://valine.swwind.me
 [xcss]: https://github.com/xCss/Valine

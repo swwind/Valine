@@ -13,7 +13,10 @@ import { HtmlUtil, dateFormat, timeAgo, getLink, Checker, padWithZeros, Event } 
 
 const gravatar = {
   cdn: 'https://gravatar.loli.net/avatar/',
-  hide: false
+  get(mail, auth) {
+    let auths = auth ? '<span class="vicon auth" title="认证用户"></span>' : '';
+    return `<img class="vimg" src="${this.cdn + md5(mail) + this.params}">${auths}`;
+  }
 };
 
 const touristName = 'tourist';
@@ -26,7 +29,8 @@ const defaultComment = {
   link: '',
   ua: navigator.userAgent,
   url: '',
-  auth: false
+  auth: false,
+  title: ''
 };
 
 const shorten = (str) => str.trim().replace(/>\s+</g, '><');
@@ -40,7 +44,7 @@ class Valine {
   constructor(option) {
     let _root = this;
     // version
-    _root.version = 'v1.2.0-beta2';
+    _root.version = 'v1.2.0-beta3';
 
     _root.md5 = md5;
     _root.store = localStorage;
@@ -79,17 +83,15 @@ class Valine {
             <input name="innick" placeholder="邮箱或称呼" class="vnick vinput" type="text">
             <input name="inpass" placeholder="密码" class="vpass vinput" type="password">
             <button class="vbtn vsinbtn active">登录</button>
-            <button class="vbtn vsupbtn">注册</button>
-            <button class="vbtn vbckbtn">返回</button>
+            <button class="vbtn vbckbtn">取消</button>
           </div>
           <div class="vsign vsup">
             <input name="upnick" placeholder="称呼" class="vnick vinput" type="text">
             <input name="uppass" placeholder="密码" class="vpass vinput" type="password">
             <input name="upmail" placeholder="邮箱" class="vmail vinput" type="email">
             <input name="uplink" placeholder="网址(https://)" class="vlink vinput" type="text">
-            <button class="vbtn vsinbtn">登录</button>
             <button class="vbtn vsupbtn active">注册</button>
-            <button class="vbtn vbckbtn">返回</button>
+            <button class="vbtn vbckbtn">取消</button>
           </div>
           <div class="vsigned">
             <div class="vleftdiv"></div>
@@ -101,7 +103,7 @@ class Valine {
         </div>
         <div class="vcontrol">
           <div class="col col-60" title="MarkDown is Support">
-            <a href="https://segmentfault.com/markdown">Markdown</a> Powered
+            <a href="https://segmentfault.com/markdown">MarkDown</a> is Support
           </div>
           <div class="col col-40 text-right">
             <button type="button" class="vsubmit vbtn">回复</button>
@@ -165,11 +167,6 @@ class Valine {
     // _root.verify = option.verify || false; // not used
 
     gravatar.params = `?d=${option.avatar}&s=40`;
-    gravatar.hide = option.avatar === 'hide';
-    gravatar.get = (mail, auth) => {
-      let auths = auth ? '<span class="vicon auth"></span>' : '';
-      return gravatar.hide ? '' : `<img class="vimg" src="${gravatar.cdn + md5(mail) + gravatar.params}">${auths}`;
-    }
 
     let av = option.av || AV;
     let appId = option.app_id || option.appId;
@@ -232,10 +229,11 @@ class Valine {
         <section>
           <div class="vhead">
             <a rel="nofollow" href="${getLink(ret.get('link'))}" target="_blank" >
-              ${ret.get("nick")}
+              ${ret.get('nick')}
             </a>
             <span class="vtag">${det.browser} ${det.version}</span>
             <span class="vtag">${det.os} ${det.osVersion}</span>
+            ${ret.get('title') ? `<span class="vtag">${ret.get('title')}</span>` : ''}
           </div>
           <div class="vcontent">
             ${ret.get("comment")}
@@ -270,7 +268,7 @@ class Valine {
       _root.loading.show();
 
       let cq = new _root.v.Query('Comment');
-      cq.equalTo('url', defaultComment['url']);
+      cq.equalTo('url', defaultComment.url);
       cq.descending('createdAt');
       cq.limit('1000');
 
@@ -344,6 +342,7 @@ class Valine {
     const onLogin = (user) => {
       _root.user = user;
       defaultComment.auth = true;
+      defaultComment.title = user.get('title');
       defaultComment.nick = user.get('username');
       defaultComment.mail = user.get('email');
       defaultComment.link = user.get('link');
@@ -358,6 +357,7 @@ class Valine {
     const onLogout = () => {
       _root.user = null;
       defaultComment.auth = false;
+      defaultComment.title = '';
       jumpTo(0);
     }
     const tryToLogin = () => {
@@ -397,11 +397,9 @@ class Valine {
     // 1
     Event.on('change', vheader.querySelector('.vsin .vpass'), tryToLogin);
     Event.on('click', vheader.querySelector('.vsin .vsinbtn'), tryToLogin);
-    Event.on('click', vheader.querySelector('.vsin .vsupbtn'), () => jumpTo(2));
     Event.on('click', vheader.querySelector('.vsin .vbckbtn'), () => jumpTo(0));
     // 2
     Event.on('change', vheader.querySelector('.vsup .vlink'), tryToRegister);
-    Event.on('click', vheader.querySelector('.vsup .vsinbtn'), () => jumpTo(1));
     Event.on('click', vheader.querySelector('.vsup .vsupbtn'), tryToRegister);
     Event.on('click', vheader.querySelector('.vsup .vbckbtn'), () => jumpTo(0));
     // 3
@@ -437,7 +435,9 @@ class Valine {
         let linkRet = Checker.link(link);
         defaultComment.mail = mailRet.k ? mailRet.v : '';
         defaultComment.link = linkRet.k ? linkRet.v : '';
-        setCache(nick, mail, link);
+        if (nick !== touristName || mail || link) {
+          setCache(nick, mail, link);
+        }
       }
       defaultComment.comment = marked(comment, { sanitize: true })
       commitEvt();

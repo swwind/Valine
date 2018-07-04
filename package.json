@@ -1,12 +1,13 @@
 {
   "name": "valine-ex",
-  "version": "1.2.0-beta2",
+  "version": "1.2.0-beta3",
   "description": "A simple comment system based on Leancloud.",
   "main": "/dist/valine-ex.min.js",
   "author": "xCss <xioveliu@gmail.com> (https://github.com/xCss) & swwind <swwind233@gmail.com> (https://github.com/swwind)",
   "scripts": {
     "build": "webpack",
     "dev": "webpack --watch",
+    "server": "http-server -p 4000 -o",
     "clear": "rm -rf dist/*"
   },
   "keywords": [
