@@ -1,29 +1,7 @@
 'use strict';
 
-const HtmlUtil = {
-  __tool: document.createElement('div'),
-  /**
-   * HTML 转码
-   * @param {String} str
-   * @return {String} result
-   */
-  encode(str) {
-    this.__tool.innerText = str;
-    return this.__tool.innerHTML;
-  },
-  /**
-   * HTML 解码
-   * @param {String} str
-   * @return {String} result
-   */
-  decode(str) {
-    this.__tool.innerHTML = str;
-    return this.__tool.innerText;
-  }
-};
-
 const padWithZeros = (vNumber, width) => {
-  var numAsString = vNumber.toString();
+  let numAsString = vNumber.toString();
   while (numAsString.length < width) {
     numAsString = '0' + numAsString;
   }
@@ -31,30 +9,30 @@ const padWithZeros = (vNumber, width) => {
 }
 
 const dateFormat = (date) => {
-  var vDay = padWithZeros(date.getDate(), 2);
-  var vMonth = padWithZeros(date.getMonth() + 1, 2);
-  var vYear = padWithZeros(date.getFullYear(), 2);
+  let vDay = padWithZeros(date.getDate(), 2);
+  let vMonth = padWithZeros(date.getMonth() + 1, 2);
+  let vYear = padWithZeros(date.getFullYear(), 2);
   return `${vYear}-${vMonth}-${vDay}`;
 }
 
 const timeAgo = (date) => {
-  var oldTime = date.getTime();
-  var currTime = new Date().getTime();
-  var diffValue = currTime - oldTime;
+  let oldTime = date.getTime();
+  let currTime = new Date().getTime();
+  let diffValue = currTime - oldTime;
 
-  var days = Math.floor(diffValue / (24 * 3600 * 1000));
+  let days = Math.floor(diffValue / (24 * 3600 * 1000));
   if (days === 0) {
     //计算相差小时数
-    var leave1 = diffValue % (24 * 3600 * 1000); //计算天数后剩余的毫秒数
-    var hours = Math.floor(leave1 / (3600 * 1000));
+    let leave1 = diffValue % (24 * 3600 * 1000); //计算天数后剩余的毫秒数
+    let hours = Math.floor(leave1 / (3600 * 1000));
     if (hours === 0) {
       //计算相差分钟数
-      var leave2 = leave1 % (3600 * 1000); //计算小时数后剩余的毫秒数
-      var minutes = Math.floor(leave2 / (60 * 1000));
+      let leave2 = leave1 % (3600 * 1000); //计算小时数后剩余的毫秒数
+      let minutes = Math.floor(leave2 / (60 * 1000));
       if (minutes === 0) {
         //计算相差秒数
-        var leave3 = leave2 % (60 * 1000); //计算分钟数后剩余的毫秒数
-        var seconds = Math.round(leave3 / 1000);
+        let leave3 = leave2 % (60 * 1000); //计算分钟数后剩余的毫秒数
+        let seconds = Math.round(leave3 / 1000);
         return seconds + ' 秒前';
       }
       return minutes + ' 分钟前';
@@ -103,4 +81,4 @@ const Event = {
   }
 }
 
-export { HtmlUtil, dateFormat, timeAgo, getLink, Checker, padWithZeros, Event };
+export { dateFormat, timeAgo, getLink, Checker, padWithZeros, Event };

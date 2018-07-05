@@ -9,7 +9,7 @@
 import md5 from 'blueimp-md5';
 import marked from 'marked';
 import detect from './assets/detect.js';
-import { HtmlUtil, dateFormat, timeAgo, getLink, Checker, padWithZeros, Event } from './assets/utils.js';
+import { dateFormat, timeAgo, getLink, Checker, padWithZeros, Event } from './assets/utils.js';
 
 const gravatar = {
   cdn: 'https://gravatar.loli.net/avatar/',
@@ -303,11 +303,7 @@ class Valine {
       return _root.store && JSON.parse(_root.store.getItem('ValineCache'));
     }
 
-    // 用户注册登录环节
-    // const signupBtn = _root.el.querySelector('button[name="signup"]');
-    // const signinBtn = _root.el.querySelector('button[name="signin"]');
-    // const vinfo = _root.el.querySelector('div.vinfo');
-    // const vctl = _root.el.querySelector('div.vctl');
+    // 用户注册登录
     const vheader = _root.el.querySelector('.vheader');
     const bindTab = (arr) => {
       Array.from(arr).map((el) => {
@@ -321,14 +317,14 @@ class Valine {
     }
     const jumpTo = (page) => { // 0-3
       vheader.scrollTo({top: page * 40, behavior: 'smooth'});
-      unbindTab(vheader.querySelectorAll('input'))
-      bindTab(vheader.children[page].querySelectorAll(`input`))
+      unbindTab(vheader.querySelectorAll('input'));
+      bindTab(vheader.children[page].querySelectorAll(`input`));
       if (page < 3) vheader.children[page].children[0].select();
     }
-    unbindTab(vheader.querySelectorAll('button, input'))
-    bindTab(vheader.children[0].querySelectorAll(`input`))
+    unbindTab(vheader.querySelectorAll('button, input'));
+    bindTab(vheader.children[0].querySelectorAll(`input`));
 
-    // 注册
+    // 注册相关
     const signup = (nick, pass, mail, link) => {
       return _root.v.User.signUp(nick, pass, {
         email: mail,
@@ -350,8 +346,8 @@ class Valine {
       vleftdiv.innerHTML = shorten(`
         ${gravatar.get(user.get('email'))}
         <span class="vintro">${user.get('username')}</span>
-      `)
-      vleftdiv.setAttribute('title', `User: ${user.get('username')}\n(${user.get('email')})`)
+      `);
+      vleftdiv.setAttribute('title', `User: ${user.get('username')}\n(${user.get('email')})`);
       jumpTo(3);
     }
     const onLogout = () => {
@@ -418,10 +414,9 @@ class Valine {
       }
     }
 
-    // 提交评论
+    // 提交评论相关
     const submitBtn = _root.el.querySelector('.vsubmit');
     const submitEvt = (e) => {
-      // veirfy
       let comment = inputs.comment.value;
       if (!comment) {
         return;
@@ -483,8 +478,8 @@ class Valine {
       })
     }
 
+    // 点下了 回复 按钮
     let bindAtEvt = (el) => {
-      // 点下了 回复 按钮
       Event.on('click', el, (e) => {
         let at = el.getAttribute('at');
         let rid = el.getAttribute('rid');
