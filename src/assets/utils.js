@@ -81,4 +81,15 @@ const Event = {
   }
 }
 
-export { dateFormat, timeAgo, getLink, Checker, padWithZeros, Event };
+let div = document.createElement('div');
+
+const encodeHTML = (str) => {
+  div.innerText = str;
+  return div.innerHTML;
+}
+const decodeHTML = (str) => {
+  div.innerHTML = str;
+  return div.innerText;
+}
+
+export { dateFormat, timeAgo, getLink, Checker, padWithZeros, Event, encodeHTML, decodeHTML };

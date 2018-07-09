@@ -9,7 +9,8 @@
 import md5 from 'blueimp-md5';
 import marked from 'marked';
 import detect from './assets/detect.js';
-import { dateFormat, timeAgo, getLink, Checker, padWithZeros, Event } from './assets/utils.js';
+import { dateFormat, timeAgo, getLink, Checker, padWithZeros, Event, encodeHTML, decodeHTML } from './assets/utils.js';
+import emoji from './assets/emoji.js';
 
 const gravatar = {
   cdn: 'https://gravatar.loli.net/avatar/',
@@ -102,12 +103,15 @@ class Valine {
           <textarea class="veditor vinput" placeholder="${_root.placeholder}"></textarea>
         </div>
         <div class="vcontrol">
-          <div class="col col-60" title="MarkDown is Support">
-            <a href="https://segmentfault.com/markdown">MarkDown</a> is Support
+          <div class="col col-60">
+            <a href="https://segmentfault.com/markdown" title="???" target="_blank">Markdown</a>
+            <a href="javascript:;" title="_(:3 」∠ )_" id="emoji-btn">(〃∀〃)</a>
           </div>
           <div class="col col-40 text-right">
-            <button type="button" class="vsubmit vbtn">回复</button>
+            <button type="button" class="vsubmit vbtn">回复 (Ctrl+Enter)</button>
           </div>
+        </div>
+        <div class="vemoji">
         </div>
       </div>
       <div class="info">
@@ -124,6 +128,12 @@ class Valine {
       </div>
     `);
     _root.el.innerHTML = eleHTML;
+
+    // emoji
+    let vemoji = _root.el.querySelector('.vemoji');
+    vemoji.innerHTML = emoji.map((emo, i) => {
+      return `<a href="javascript:;" title="${decodeHTML(emo).replace('"', '\\"')}" class="vemoji-item" style="animation-delay: ${i * 0.01}s">${emo}</a>`
+    }).join('');
 
     // Empty Data
     let vempty = _root.el.querySelector('.vempty');
@@ -320,6 +330,7 @@ class Valine {
       unbindTab(vheader.querySelectorAll('input'));
       bindTab(vheader.children[page].querySelectorAll(`input`));
       if (page < 3) vheader.children[page].children[0].select();
+      else _root.el.querySelector('.veditor').select();
     }
     unbindTab(vheader.querySelectorAll('button, input'));
     bindTab(vheader.children[0].querySelectorAll(`input`));
@@ -438,6 +449,11 @@ class Valine {
       commitEvt();
     }
     Event.on('click', submitBtn, submitEvt);
+    Event.on('keydown', inputs.comment, (e) => {
+      if (e.ctrlKey && e.keyCode == 13) {
+        submitBtn.click();
+      }
+    })
 
     // leancloud ACL
     const getAcl = (readAccess = true, writeAccess = false) => {
@@ -490,6 +506,22 @@ class Valine {
         inputs.comment.select();
       })
     }
+
+    // emoji
+    let emoji_showen = false;
+    let emoji_btn = _root.el.querySelector('#emoji-btn');
+    let vemoji = _root.el.querySelector('.vemoji');
+    Event.on('click', emoji_btn, (e) => {
+      emoji_showen = !emoji_showen;
+      vemoji.style.display = emoji_showen ? 'block' : 'none';
+      emoji_btn.classList.toggle('active');
+    })
+    vemoji.querySelectorAll('.vemoji-item').forEach((el) => {
+      Event.on('click', el, (e) => {
+        inputs.comment.value += el.innerText;
+        inputs.comment.focus();
+      })
+    })
   }
 }
 
