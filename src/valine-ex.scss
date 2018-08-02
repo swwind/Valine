@@ -112,9 +112,6 @@
         &.col-60 {
           width: 60%;
         }
-        &.split {
-          width: 50%;
-        }
         a {
           margin-right: 20px;
           display: inline-block;
@@ -128,6 +125,52 @@
           &.active {
             color: #eb5055;
             transition: color .3s;
+          }
+        }
+        label {
+          display: inline-block;
+          margin-right: 3rem;
+          cursor: pointer;
+          font-size: .8rem;
+          input[type="checkbox"] {
+            cursor: pointer;
+            appearance: none;
+            width: 1rem;
+            height: 1rem;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+            vertical-align: middle;
+            margin-right: .75rem;
+            position: relative;
+            border-radius: 25%;
+            transition: border-color .2s;
+            &:focus {
+              outline: none;
+            }
+            &:before {
+              content: "";
+              border-radius: 25%;
+              position: absolute;
+              left: .2rem;
+              top: .15rem;
+              width: .5rem;
+              height: .5rem;
+              background: #eb5055;
+              transform: scale(0);
+              transition: transform .2s;
+            }
+            &:checked {
+              border-color: #eb5055;
+              transition: border-color .2s;
+            }
+            &:checked:before {
+              transform: scale(1);
+              transition: transform .2s;
+            }
+          }
+          &:hover input {
+            border-color: #eb5055;
+            transition: border-color .2s;
           }
         }
       }
@@ -513,8 +556,7 @@
     0%, to { transform: translate(0) rotate(0deg); }
   }
   @keyframes fade-in {
-    0% { transform: scale(0, 0); }
-    75% { transform: scale(1.02, 1.02); }
-    100% { transform: scale(1, 1); }
+    from { transform: scale(0, 0); }
+    to   { transform: scale(1, 1); }
   }
 }

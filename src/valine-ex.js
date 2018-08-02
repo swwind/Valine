@@ -22,7 +22,7 @@ const gravatar = {
 
 const touristName = 'tourist';
 
-const defaultComment = {
+const dfc = {
   comment: '',
   rid: '',
   nick: touristName,
@@ -108,6 +108,7 @@ class Valine {
             <a href="javascript:;" title="_(:3 」∠ )_" id="emoji-btn">(〃∀〃)</a>
           </div>
           <div class="col col-40 text-right">
+            <label><input type="checkbox" id="vpr">私人回复</label>
             <button type="button" class="vsubmit vbtn">回复 (Ctrl+Enter)</button>
           </div>
         </div>
@@ -190,7 +191,7 @@ class Valine {
     av.init(appId, appKey);
     _root.v = av;
     // edge bug here ?
-    defaultComment.url = (option.path || location.pathname).replace(/index\.html?$/, '');
+    dfc.url = (option.path || location.pathname).replace(/index\.html?$/, '');
 
     // preparation end =======================
 
@@ -216,6 +217,13 @@ class Valine {
 
     // 插入一个评论
     const insertDom = (ret) => {
+      // a private comment
+      if (ret.get('private')) {
+        // is a tourist
+        if (!_root.user) return;
+        // is not admin
+        if (!_root.user.get('admin')) return;
+      }
       let mt = !!ret.get('rid'); // is reply
       let _vlist = _root.el.querySelector('.vlist');
       if (mt) {
@@ -244,6 +252,7 @@ class Valine {
             <span class="vtag">${det.browser} ${det.version}</span>
             <span class="vtag">${det.os} ${det.osVersion}</span>
             ${ret.get('title') ? `<span class="vtag">${ret.get('title')}</span>` : ''}
+            ${ret.get('private') ? `<span class="vtag">[Private Reply]</span>` : ''}
           </div>
           <div class="vcontent">
             ${ret.get("comment")}
@@ -278,7 +287,7 @@ class Valine {
       _root.loading.show();
 
       let cq = new _root.v.Query('Comment');
-      cq.equalTo('url', defaultComment.url);
+      cq.equalTo('url', dfc.url);
       cq.descending('createdAt');
       cq.limit('1000');
 
@@ -348,11 +357,11 @@ class Valine {
     }
     const onLogin = (user) => {
       _root.user = user;
-      defaultComment.auth = true;
-      defaultComment.title = user.get('title');
-      defaultComment.nick = user.get('username');
-      defaultComment.mail = user.get('email');
-      defaultComment.link = user.get('link');
+      dfc.auth = true;
+      dfc.title = user.get('title');
+      dfc.nick = user.get('username');
+      dfc.mail = user.get('email');
+      dfc.link = user.get('link');
       let vleftdiv = vheader.querySelector('.vleftdiv');
       vleftdiv.innerHTML = shorten(`
         ${gravatar.get(user.get('email'))}
@@ -363,8 +372,8 @@ class Valine {
     }
     const onLogout = () => {
       _root.user = null;
-      defaultComment.auth = false;
-      defaultComment.title = '';
+      dfc.auth = false;
+      dfc.title = '';
       jumpTo(0);
     }
     const tryToLogin = () => {
@@ -436,16 +445,17 @@ class Valine {
         let nick = inputs.nick.value || touristName;
         let mail = inputs.mail.value;
         let link = inputs.link.value;
-        defaultComment.nick = nick;
+        dfc.nick = nick;
         let mailRet = Checker.mail(mail);
         let linkRet = Checker.link(link);
-        defaultComment.mail = mailRet.k ? mailRet.v : '';
-        defaultComment.link = linkRet.k ? linkRet.v : '';
+        dfc.mail = mailRet.k ? mailRet.v : '';
+        dfc.link = linkRet.k ? linkRet.v : '';
         if (nick !== touristName || mail || link) {
           setCache(nick, mail, link);
         }
       }
-      defaultComment.comment = marked(comment, { sanitize: true })
+      dfc.comment = marked(comment, { sanitize: true });
+      dfc.private = _root.el.querySelector('#vpr').checked;
       commitEvt();
     }
     Event.on('click', submitBtn, submitEvt);
@@ -464,12 +474,15 @@ class Valine {
     }
 
     // 提交评论
-    // 这时 defaultComment 应该已经填写完毕了
+    // 这时 dfc 应该已经填写完毕了
     const commitEvt = () => {
+      if (!window.confirm('游客将无法查看到任何私人回复，确认继续？')) {
+        return;
+      }
       submitBtn.setAttribute('disabled', true);
       _root.loading.show();
       let Ct = _root.v.Object.extend('Comment');
-      let comment = new Ct(defaultComment);
+      let comment = new Ct(dfc);
       comment.setACL(getAcl());
       comment.save().then((ret) => {
         let _count = _root.el.querySelector('.num');
@@ -486,7 +499,7 @@ class Valine {
         // 清理回复设置
         inputs.comment.value = "";
         inputs.comment.setAttribute('placeholder', _root.placeholder);
-        defaultComment.rid = '';
+        dfc.rid = '';
       }).catch((ex) => {
         _root.loading.hide();
         _root.nodata.show('提交失败\n' + ex.message);
@@ -500,7 +513,7 @@ class Valine {
         let at = el.getAttribute('at');
         let rid = el.getAttribute('rid');
         let rmail = el.getAttribute('mail');
-        defaultComment.rid = rid;
+        dfc.rid = rid;
         inputs.comment.setAttribute('placeholder', `回复 ${at} 的评论...`);
         inputs.comment.scrollIntoView({block: 'center', behavior: 'smooth'});
         inputs.comment.select();

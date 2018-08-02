@@ -41,5 +41,9 @@ Open leancloud dashboard, open `_User` class, the `title` attribute is the what 
 
 Just modify it.
 
+**Private Reply**
+
+Add an `admin:true` attribute to your user.
+
 [demo]: https://valine.swwind.me
 [xcss]: https://github.com/xCss/Valine
