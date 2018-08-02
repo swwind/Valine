@@ -211,7 +211,7 @@ class Valine {
         el.classList.add('expand');
         Event.on('click', el, (e) => {
           el.setAttribute('class', 'vcontent');
-        })
+        });
       }
     }
 
@@ -221,24 +221,31 @@ class Valine {
       if (ret.get('private')) {
         // is a tourist
         if (!_root.user) return;
-        // is not admin
-        if (!_root.user.get('admin')) return;
+        // is neither author nor admin
+        const isAuthor = ret.get('auth') && _root.user.get('username') === ret.get('nick');
+        const isAdmin  = _root.user.get('admin');
+        if (!isAuthor && !isAdmin) return;
       }
       let mt = !!ret.get('rid'); // is reply
       let _vlist = _root.el.querySelector('.vlist');
       if (mt) {
         let rid = ret.get('rid');
-        let rel = document.getElementById(rid).querySelector('section');
+        let rpc = document.getElementById(rid);
+        if (!rpc) {
+          // origin comment did not shown
+          return;
+        }
+        let rel = rpc.querySelector('section');
         if (rel.querySelector('ul')) {
           _vlist = rel.querySelector('ul');
-          _vlist.classList.add('vlist')
+          _vlist.classList.add('vlist');
         } else {
           let before = rel.querySelector('.vfooter');
           _vlist = document.createElement('ul');
           rel.appendChild(_vlist);
         }
       }
-      let det = detect(ret.get('ua'))
+      let det = detect(ret.get('ua'));
       let _vcard = document.createElement('li');
       _vcard.setAttribute('class', 'vcard');
       _vcard.setAttribute('id', ret.id);
@@ -302,7 +309,7 @@ class Valine {
         _root.loading.hide();
       }).catch((ex) => {
         _root.loading.hide();
-      })
+      });
     }
     query();
 
@@ -327,14 +334,14 @@ class Valine {
     const bindTab = (arr) => {
       Array.from(arr).map((el) => {
         el.removeAttribute('tabindex');
-      })
+      });
     }
     const unbindTab = (arr) => {
       Array.from(arr).map((el) => {
         el.setAttribute('tabindex', -1);
-      })
+      });
     }
-    const jumpTo = (page) => { // 0-3
+    const jumpTo = (page) => {
       vheader.scrollTo({top: page * 40, behavior: 'smooth'});
       unbindTab(vheader.querySelectorAll('input'));
       bindTab(vheader.children[page].querySelectorAll(`input`));
@@ -403,7 +410,7 @@ class Valine {
     const tryToLogout = () => {
       _root.v.User.logOut().then(onLogout).catch((err) => {
         alert('登出失败\n' + err.message);
-      })
+      });
     }
 
     // 绑定按钮事件
@@ -463,7 +470,7 @@ class Valine {
       if (e.ctrlKey && e.keyCode == 13) {
         submitBtn.click();
       }
-    })
+    });
 
     // leancloud ACL
     const getAcl = (readAccess = true, writeAccess = false) => {
@@ -476,7 +483,7 @@ class Valine {
     // 提交评论
     // 这时 dfc 应该已经填写完毕了
     const commitEvt = () => {
-      if (!window.confirm('游客将无法查看到任何私人回复，确认继续？')) {
+      if (!_root.user && !window.confirm('游客将无法查看到任何私人回复，确认继续？')) {
         return;
       }
       submitBtn.setAttribute('disabled', true);
@@ -504,7 +511,7 @@ class Valine {
         _root.loading.hide();
         _root.nodata.show('提交失败\n' + ex.message);
         setTimeout(_root.nodata.hide, 2000);
-      })
+      });
     }
 
     // 点下了 回复 按钮
@@ -515,9 +522,9 @@ class Valine {
         let rmail = el.getAttribute('mail');
         dfc.rid = rid;
         inputs.comment.setAttribute('placeholder', `回复 ${at} 的评论...`);
-        inputs.comment.scrollIntoView({block: 'center', behavior: 'smooth'});
+        inputs.comment.scrollIntoView({ block: 'center', behavior: 'smooth' });
         inputs.comment.select();
-      })
+      });
     }
 
     // emoji
@@ -528,13 +535,13 @@ class Valine {
       emoji_showen = !emoji_showen;
       vemoji.style.display = emoji_showen ? 'block' : 'none';
       emoji_btn.classList.toggle('active');
-    })
+    });
     vemoji.querySelectorAll('.vemoji-item').forEach((el) => {
       Event.on('click', el, (e) => {
         inputs.comment.value += el.innerText;
         inputs.comment.focus();
-      })
-    })
+      });
+    });
   }
 }
 

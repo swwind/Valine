@@ -7,7 +7,7 @@
   "scripts": {
     "build": "webpack",
     "dev": "webpack --watch",
-    "server": "http-server -p 4000 -o",
+    "start": "http-server -p 4000 -o",
     "clear": "rm -rf dist/*"
   },
   "keywords": [
